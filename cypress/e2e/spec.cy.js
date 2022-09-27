@@ -1,7 +1,8 @@
 describe("User Flow of Page", () => {
   beforeEach(() => {
-    cy.intercept("GET", "http://localhost:3001/api/v1/orders", '/sampleData.json')
-    .as("orders");
+    cy.intercept("GET", "http://localhost:3001/api/v1/orders", {
+      fixture: "/sampleData.json",
+    }).as("orders");
     cy.visit("http://localhost:3000");
   });
 
@@ -24,22 +25,31 @@ describe("User Flow of Page", () => {
   });
 
   it("Should show the stubbed sighting on Main Page load", () => {
-    cy
+    cy.wait("@orders")
 
-    .wait("@orders")
-      .its("response.body")
-      .should("have.length", 16)
-      // .get(".order")
-      // .should("exist")
-    // .should('have.length', 4)
-    // .get('.order-name').should('contain', 'bear')
-    // .get('.ingredients').should('contain', 'beans')
+      .get(".order")
+      .should("exist")
+      .should("have.length", 1)
+      .get(".order-name")
+      .should("contain", "Big Bear")
+      .get(".ingredients")
+      .should("contain", "beans");
   });
 
-  it('Should be able to create a new burrito', () => {
+  it("Should be able to create a new burrito", () => {
     cy.get("form")
-      .get("input").should('have.attr', 'name', 'name').type('BIGUN')
-      .get('.ingredient-buttons').first().should('contain', 'beans').click()
-      .get('.submit-button' ).click()
-  })
+      .get("input")
+      .should("have.attr", "name", "name")
+      .type("BIGUN")
+      .get(".ingredient-buttons")
+      .first()
+      .should("contain", "beans")
+      .click()
+      .get(".submit-button")
+      .click()
+      .intercept("POST", "/orders", {
+        statusCode: 201,
+        body: { fixture: "/sampleData.json" },
+      });
+  });
 });

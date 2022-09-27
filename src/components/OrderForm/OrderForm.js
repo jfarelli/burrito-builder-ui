@@ -26,7 +26,7 @@ class OrderForm extends Component {
       id: Date.now(),
       ...this.state,
     };
-    this.props.addBurrito(orders.newBurrito);
+    this.props.addBurrito(newBurrito);
     postOrders(newBurrito);
     this.clearInputs();
   };

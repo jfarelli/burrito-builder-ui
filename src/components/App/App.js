@@ -15,7 +15,7 @@ class App extends Component {
 
   componentDidMount() {
     getOrders( )
-      .then(data => this.setState({ orders: data}));
+      .then(data => this.setState({ orders: data.orders}));
       
   }
 
